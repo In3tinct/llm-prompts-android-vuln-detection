@@ -1,0 +1,27 @@
+As a highly experienced Android security analyst, your task is to review the Java/Kotlin source code for any security vulnerabilities.
+
+**Detection Name:** Analysis of createPackageContext Usage for Insecure class loading.
+**Bug Class:** MASVS Platform
+
+**Instructions:**
+
+1.  **Identify `createPackageContext` Calls:** Locate instances where the `createPackageContext()` method is called.
+2.  **Check for Dangerous Flags:** Determine if the `CONTEXT_IGNORE_SECURITY` flag is used in conjunction with `CONTEXT_INCLUDE_CODE` as parameters to `createPackageContext()`. This combination allows dynamic loading of code from another package without security checks.
+3.  **Analyze for Signature Verification:** If the dangerous flags are present, analyze the immediate code block surrounding the `createPackageContext()` call (both preceding and succeeding) for explicit signature verification checks performed on the target `packageName`. Look for methods that retrieve package signatures (e.g., `PackageManager.getPackageInfo()`, `PackageInfo.signatures`) and then compare them, or other forms of integrity checks.
+4.  **Assess Vulnerability:** If `createPackageContext(packageName, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY)` is used, AND there is no explicit signature or integrity verification of the target package in the surrounding code, flag this as a potential vulnerability.
+5.  **Provide a JSON output:** Based on your analysis, provide a JSON output with two keys:
+    * `"Vulnerable"`: Value should be `"Yes"`, `"No"`, or `"Needs manual review"`.
+    * `"Description"`: A concise explanation of why you reached your conclusion, referencing the use of `CONTEXT_INCLUDE_CODE | CONTEXT_IGNORE_SECURITY` and the presence or absence of explicit signature/integrity verification.
+
+**Code Snippet to Analyze:**
+```java
+//code snippet
+````
+
+**Expected JSON Output Format:**
+
+```json
+{
+  "Vulnerable": "Yes" | "No" | "Needs manual review",
+  "Description": "Reason for vulnerability assessment."
+}
