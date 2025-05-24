@@ -1,0 +1,38 @@
+As a highly experienced Android security analyst, your task is to review the provided Java/Kotlin code snippet, focusing on potential insecure sensitive data storage vulnerabilities.
+
+**Detection Name:** Analysis of Insecure Sensitive Data Storage
+**Bug Class:** MASVS-STORAGE
+
+**Instructions:**
+
+1.  **Analyze the code context:** Identify all instances where local data storage mechanisms (SharedPreferences, file systems, local databases) are utilized.
+2.  **Identify potentially sensitive variables/keys:** Look for variable names or keys associated with stored data functions that strongly suggest sensitive information. Examples include, but are not limited to:
+    * `apiKey`
+    * `creditCardNumber`
+    * `userPassword`
+    * `pin`
+    * `token`
+    * `sessionId`
+    * `privateKey`
+    * `ssn`
+    * `address`
+    * `email`
+    * `phone`
+    * `dob`
+3.  **Check for encryption/secure storage:** Determine if the corresponding code context includes explicit calls to encryption routines (e.g., `Cipher`, `KeyStore`, AndroidX Security Crypto APIs) or secure storage mechanisms provided by the Android platform (e.g., `EncryptedSharedPreferences`, `KeyStore`). The absence of such mechanisms when sensitive data is identified is a strong indicator of a vulnerability.
+4.  **Provide a JSON output:** Based on your analysis, provide a JSON output with two keys:
+    * `"Vulnerable"`: Value should be `"Yes"`, `"No"`, or `"Needs manual review"`.
+    * `"Description"`: A concise explanation of why you reached your conclusion, referencing the specific sensitive variable/key identified and the presence or absence of secure storage mechanisms.
+
+**Code Snippet to Analyze:**
+```java
+//code snippet
+````
+
+**Expected JSON Output Format:**
+
+```json
+{
+  "Vulnerable": "Yes" | "No" | "Needs manual review",
+  "Description": "Reason for vulnerability assessment."
+}
