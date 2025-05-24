@@ -1,7 +1,7 @@
 As a highly experienced Android security analyst, your task is to review the Java/Kotlin source code for any security vulnerabilities.
 
 **Detection Name:** Analysis of Content Provider Write Operations without Explicit Write Permissions
-**Bug Class:** MASVS Platform (specifically MSTG-DATA-STORAGE-5)
+**Bug Class:** MASVS Platform
 
 **Instructions:**
 
