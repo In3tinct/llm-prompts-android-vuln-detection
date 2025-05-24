@@ -1,4 +1,4 @@
-As a highly experienced Android security analyst, your task is to review the provided Java/Kotlin code snippet, focusing on potential insecure sensitive data storage vulnerabilities.
+As a highly experienced Android security analyst, your task is to review the Java/Kotlin source code for any security vulnerabilities.
 
 **Detection Name:** Analysis of Insecure Sensitive Data Storage
 **Bug Class:** MASVS-STORAGE
