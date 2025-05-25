@@ -1,1 +1,37 @@
+package com.example.myapplication;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
+
+import java.lang.reflect.InvocationTargetException;
+
+public class InsecureClassLoadingviaCreatepackagecontext extends Activity {
+
+    Context remoteContext = null;
+    private static final String REMOTE_PACKAGE_NAME = "com.example.broadcastsender";
+
+    public void loadRemoteClass()
+    {
+        try {
+            remoteContext = createPackageContext(
+                    REMOTE_PACKAGE_NAME, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
+            ClassLoader classLoader = remoteContext.getClassLoader();
+            Class<?> payloadClass = classLoader.loadClass("com.example.broadcastsender.ExecuteSampleCode");
+            Object payloadInstance = payloadClass.newInstance();
+            java.lang.reflect.Method payloadMethod = payloadClass.getMethod("invoke");
+            payloadMethod.invoke(payloadInstance);
+        } catch (PackageManager.NameNotFoundException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (
+                InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
