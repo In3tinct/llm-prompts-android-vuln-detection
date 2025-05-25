@@ -1,1 +1,48 @@
+package com.example.myapplication;
 
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.IBinder;
+import android.util.Log;
+
+public class UnprotectedExportedService extends Service {
+
+    private static final String TAG = "ExportedService";
+    
+    // Name of the SharedPreferences file
+    private static final String PREF_FILE_NAME = "password";
+    // Key for the sensitive data within the SharedPreferences file
+    private static final String SENSITIVE_DATA_KEY = "confidential_info"; // You can choose your own key name
+
+    private SharedPreferences sharedPreferences;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // Initialize SharedPreferences when the service is created
+        sharedPreferences = getApplicationContext().getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return (IBinder) new SensitiveBinder();
+    }
+
+    private class SensitiveBinder extends ISensitiveService.Stub {
+        @Override
+        public String getSensitiveInfo() {
+            String sensitiveInfo = sharedPreferences.getString(SENSITIVE_DATA_KEY, "No sensitive data found.");
+            Log.d(TAG, "Sensitive info retrieved from SharedPreferences.");
+            return sensitiveInfo;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "Service destroyed.");
+    }
+}
