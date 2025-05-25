@@ -1,0 +1,120 @@
+package com.example.myapplication;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class SecureClassLoadingViaCreatePackageContext extends Activity {
+
+    private static final String TAG = "SecureClassLoading";
+    private static final String REMOTE_PACKAGE_NAME = "com.example.broadcastsender";
+
+    private static final String EXPECTED_REMOTE_SIGNATURE_SHA256 =
+            "YOUR_EXPECTED_REMOTE_PACKAGE_SIGNATURE_SHA256_HERE";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        loadRemoteClass();
+    }
+
+    public void loadRemoteClass() {
+        if (!isPackageSignatureValid(REMOTE_PACKAGE_NAME)) {
+            Log.e(TAG, "Remote package signature mismatch or not found. Aborting class load.");
+            Toast.makeText(this, "Security check failed: Remote app signature invalid.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Context remoteContext = null;
+        try {
+            remoteContext = createPackageContext(
+                    REMOTE_PACKAGE_NAME, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
+            ClassLoader classLoader = remoteContext.getClassLoader();
+            Class<?> payloadClass = classLoader.loadClass("com.example.broadcastsender.ExecuteSampleCode");
+            Object payloadInstance = payloadClass.newInstance();
+            java.lang.reflect.Method payloadMethod = payloadClass.getMethod("invoke");
+            payloadMethod.invoke(payloadInstance);
+
+            Log.d(TAG, "Remote class loaded and invoked successfully.");
+            Toast.makeText(this, "Remote code executed (signature verified).", Toast.LENGTH_SHORT).show();
+
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Remote package not found: " + e.getMessage());
+            Toast.makeText(this, "Error: Remote app not installed.", Toast.LENGTH_LONG).show();
+        } catch (ClassNotFoundException e) {
+            Log.e(TAG, "Payload class not found: " + e.getMessage());
+            Toast.makeText(this, "Error: Remote class not found.", Toast.LENGTH_LONG).show();
+        } catch (InstantiationException e) {
+            Log.e(TAG, "Failed to instantiate payload class: " + e.getMessage());
+            Toast.makeText(this, "Error: Cannot create remote class instance.", Toast.LENGTH_LONG).show();
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "Illegal access during method invocation: " + e.getMessage());
+            Toast.makeText(this, "Error: Access denied to remote method.", Toast.LENGTH_LONG).show();
+        } catch (NoSuchMethodException e) {
+            Log.e(TAG, "Payload method 'invoke' not found: " + e.getMessage());
+            Toast.makeText(this, "Error: Remote method 'invoke' not found.", Toast.LENGTH_LONG).show();
+        } catch (InvocationTargetException e) {
+            Log.e(TAG, "Exception during remote method invocation: " + e.getTargetException().getMessage());
+            Toast.makeText(this, "Error: Remote code execution failed.", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Log.e(TAG, "An unexpected error occurred: " + e.getMessage());
+            Toast.makeText(this, "An unexpected error occurred.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean isPackageSignatureValid(String packageName) {
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+            Signature[] signatures = packageInfo.signatures;
+
+            if (signatures == null || signatures.length == 0) {
+                Log.w(TAG, "No signatures found for package: " + packageName);
+                return false;
+            }
+
+            for (Signature signature : signatures) {
+                String currentSignatureSha256 = getSHA256Fingerprint(signature.toByteArray());
+                if (currentSignatureSha256 != null && currentSignatureSha256.equalsIgnoreCase(EXPECTED_REMOTE_SIGNATURE_SHA256)) {
+                    Log.d(TAG, "Signature matched for package: " + packageName);
+                    return true;
+                }
+            }
+            Log.w(TAG, "Signature mismatch for package: " + packageName);
+            return false;
+
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Package not found: " + packageName + " - " + e.getMessage());
+            return false;
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            Log.e(TAG, "Error calculating SHA-256: " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            Log.e(TAG, "General error checking signature: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private String getSHA256Fingerprint(byte[] cert) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        MessageDigest md = MessageDigest.getInstance("SHA256");
+        md.update(cert);
+        return bytesToHex(md.digest());
+    }
+
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X", b));
+        }
+        return sb.toString();
+    }
+}
