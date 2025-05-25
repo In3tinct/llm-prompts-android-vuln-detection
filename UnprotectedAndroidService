@@ -1,0 +1,30 @@
+As a highly experienced Android security analyst, your task is to review the Java/Kotlin source code for any security vulnerabilities.
+
+**Detection Name:** Analysis of Unprotected Exported Service without App-Side Validation.
+**Bug Class:** MASVS Platform
+
+**Instructions:**
+
+1.  **Analyze the given Service Java/Kotlin source code:**
+    * Given to you is the code for an exported Service which is not protected with android permission in AndroidManifest.xml file.
+    * Examine the `onStartCommand()`, `onBind()`, and any other critical methods (e.g., methods within an `IBinder` implementation) that handle incoming requests or sensitive operations.
+    * Look for explicit validation of the caller's UID (User ID) using methods such as:
+        * `Binder.getCallingUid()`
+2.  **Assess Vulnerability:**
+    * If an exported service performs sensitive operations or returns privileged information without verifying the caller's UID using appropriate app-side validation, it's a potential vulnerability.
+3.  **Provide a JSON output:** Based on your analysis, provide a JSON output with two keys:
+    * `"Vulnerable"`: Value should be `"Yes"`, `"No"`, or `"Needs manual review"`.
+    * `"Description"`: A concise explanation of why you reached your conclusion, referencing the service's export status, the absence of a manifest-level permission, and the lack of app-side caller UID validation before processing sensitive data or operations.
+
+**Code Snippet to Analyze:**
+```java
+//code snippet
+````
+
+**Expected JSON Output Format:**
+
+```json
+{
+  "Vulnerable": "Yes" | "No" | "Needs manual review",
+  "Description": "Reason for vulnerability assessment."
+}
