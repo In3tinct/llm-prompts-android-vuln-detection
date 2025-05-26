@@ -1,0 +1,4 @@
+{
+  "Vulnerable": "Yes",
+  "Description": "The ContentProvider `VulnerableContentProviderWrite` is exported (implicitly or explicitly, as no `android:exported` is declared in the Manifest snippet provided, but it's often the default for Content Providers) and does not have `write:permissions` declared in the `AndroidManifest.xml`. The `insert()` and `delete()` methods simply return `0`, effectively performing no operation. However, the `update()` method contains actual data modification logic by calling `database.update()`. Crucially, there are no explicit permission checks or validation of the caller's UID (e.g., using `Binder.getCallingUid()`) within the `update()` method. This means any application can update the ContentProvider's data without requiring any specific write permission, leading to an insecure direct object reference vulnerability."
+}
