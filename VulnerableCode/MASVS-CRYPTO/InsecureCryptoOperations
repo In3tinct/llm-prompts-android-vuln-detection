@@ -20,8 +20,6 @@ public class InsecureCryptoOperations extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         String originalText = "This is a secret message.";
-        String encryptionKey = "a_very_secret_key"; // 16, 24, or 32 bytes for AES
-
 
         try {
 
