@@ -1,0 +1,129 @@
+package com.example.myapplication;
+
+import android.os.Bundle;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
+import android.util.Log;
+import androidx.appcompat.app.AppCompatActivity;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.Arrays;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.BadPaddingException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+
+public class CryptoOperations extends AppCompatActivity {
+
+    private static final String TAG = "SecureCryptoDemo";
+    private static final String KEY_ALIAS = "MySuperSecretAESKey"; // Alias for the key in AndroidKeyStore
+    private static final int GCM_IV_LENGTH = 12; // 96-bit IV for GCM (recommended)
+    private static final int GCM_TAG_LENGTH = 128; // 128-bit authentication tag for GCM
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        String originalText = "This is a highly sensitive secret message that needs proper encryption.";
+
+        try {
+            // Get or generate the AES key from AndroidKeyStore
+            SecretKey aesKey = getOrCreateSecretKey();
+
+            // --- Encryption ---
+            // Use AES/GCM/NoPadding (GCM handles padding itself and provides authentication)
+            Cipher encryptCipher = Cipher.getInstance("AES/GCM/NoPadding");
+            byte[] iv = new byte[GCM_IV_LENGTH]; // Generate a new IV for each encryption
+            new java.security.SecureRandom().nextBytes(iv); // Fill IV with random bytes
+
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
+            encryptCipher.init(Cipher.ENCRYPT_MODE, aesKey, gcmParameterSpec);
+
+            byte[] encryptedDataWithTag = encryptCipher.doFinal(originalText.getBytes(StandardCharsets.UTF_8));
+
+            // Combine IV and ciphertext for storage/transmission
+            // The IV needs to be available for decryption
+            byte[] combined = new byte[GCM_IV_LENGTH + encryptedDataWithTag.length];
+            System.arraycopy(iv, 0, combined, 0, GCM_IV_LENGTH);
+            System.arraycopy(encryptedDataWithTag, 0, combined, GCM_IV_LENGTH, encryptedDataWithTag.length);
+
+            // Convert combined bytes to Base64 for display
+            String encryptedBase64 = Base64.encodeToString(combined, Base64.DEFAULT);
+
+            Log.d(TAG, "Original: " + originalText);
+            Log.d(TAG, "Generated IV (Base64): " + Base64.encodeToString(iv, Base64.DEFAULT));
+            Log.d(TAG, "Encrypted (Base64, IV+Ciphertext): " + encryptedBase64);
+
+
+            // --- Decryption ---
+            // Extract IV and ciphertext from combined byte array
+            byte[] receivedCombined = Base64.decode(encryptedBase64, Base64.DEFAULT);
+            byte[] receivedIv = Arrays.copyOfRange(receivedCombined, 0, GCM_IV_LENGTH);
+            byte[] receivedEncryptedDataWithTag = Arrays.copyOfRange(receivedCombined, GCM_IV_LENGTH, receivedCombined.length);
+
+            Cipher decryptCipher = Cipher.getInstance("AES/GCM/NoPadding");
+            GCMParameterSpec decryptGcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, receivedIv);
+            decryptCipher.init(Cipher.DECRYPT_MODE, aesKey, decryptGcmParameterSpec);
+
+            byte[] decryptedData = decryptCipher.doFinal(receivedEncryptedDataWithTag);
+            String decryptedText = new String(decryptedData, StandardCharsets.UTF_8);
+            Log.d(TAG, "Decrypted: " + decryptedText);
+
+            if (originalText.equals(decryptedText)) {
+                Log.i(TAG, "Decryption successful and matches original text!");
+            } else {
+                Log.e(TAG, "Decryption failed: Text mismatch!");
+            }
+
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException | NoSuchAlgorithmException
+                 | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException
+                 | KeyStoreException | CertificateException | IOException | UnrecoverableKeyException
+                 | NoSuchProviderException e) {
+            Log.e(TAG, "Error during crypto operations: " + e.getMessage(), e);
+        }
+    }
+
+    private SecretKey getOrCreateSecretKey() throws NoSuchAlgorithmException, NoSuchProviderException,
+            InvalidAlgorithmParameterException, KeyStoreException, CertificateException, IOException, UnrecoverableKeyException {
+
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null); // Load the KeyStore
+
+        // Check if the key already exists
+        if (!keyStore.containsAlias(KEY_ALIAS)) {
+            Log.d(TAG, "Generating new AES key in AndroidKeyStore.");
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(
+                    KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+
+            // Define key parameters for security
+            keyGenerator.init(
+                    new KeyGenParameterSpec.Builder(KEY_ALIAS,
+                            KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                            .setKeySize(256) // Use 256-bit AES key for stronger security
+                            // .setUserAuthenticationRequired(true) // Requires user authentication (e.g., fingerprint/PIN) for key use
+                            // .setUserAuthenticationValidityDurationSeconds(60) // How long key is valid after auth
+                            .build());
+            keyGenerator.generateKey();
+        } else {
+            Log.d(TAG, "Using existing AES key from AndroidKeyStore.");
+        }
+
+        // Retrieve the key from the KeyStore
+        return (SecretKey) keyStore.getKey(KEY_ALIAS, null);
+    }
+}
