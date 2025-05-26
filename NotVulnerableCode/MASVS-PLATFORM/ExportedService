@@ -9,8 +9,6 @@ import android.os.RemoteException;
 import android.util.Log;
 
 public class ProtectedExportedService extends Service {
-
-    private static final String TAG = "ProtectedExportedService";
   
     private final ISensitiveService.Stub mBinder = new ISensitiveService.Stub() {
         @Override
