@@ -81,8 +81,6 @@ public class VulnerableContentProviderWrite extends ContentProvider {
 
         if (getContext().checkCallingPermission(REQUIRED_WRITE_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
         Log.w(TAG, "Unauthorized update attempt. Caller does not have permission: " + REQUIRED_WRITE_PERMISSION);
-        // It's crucial to throw a SecurityException if permission is denied.
-        // This will be caught by the system and returned to the caller.
         throw new SecurityException("Permission Denied: Caller does not have " + REQUIRED_WRITE_PERMISSION);
         }
 
