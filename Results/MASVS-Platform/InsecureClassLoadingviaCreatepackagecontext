@@ -1,0 +1,4 @@
+{
+  "Vulnerable": "Yes",
+  "Description": "The code uses `createPackageContext(packageName, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY)` to load code from a remote package. This combination of flags allows dynamic code loading without security checks. Crucially, there is no explicit signature or integrity verification performed on the `REMOTE_PACKAGE_NAME` ('com.example.broadcastsender') in the surrounding code, making it vulnerable to malicious code injection if a rogue application spoofs the package name."
+}
