@@ -1,0 +1,158 @@
+package com.example.myapplication;
+
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.UriMatcher;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+
+public class VulnerableContentProviderWrite extends ContentProvider {
+
+    private static final String AUTHORITY = "com.example.mycontentprovider";
+    private static final String TABLE_NAME = "my_table";
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+
+    private static final int CODE_ALL_ITEMS = 1;
+    private static final int CODE_SINGLE_ITEM = 2;
+
+    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+    static {
+        uriMatcher.addURI(AUTHORITY, TABLE_NAME, CODE_ALL_ITEMS);
+        uriMatcher.addURI(AUTHORITY, TABLE_NAME + "/#", CODE_SINGLE_ITEM);
+    }
+
+    private SQLiteDatabase database;
+
+    @Override
+    public boolean onCreate() {
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        database = dbHelper.getWritableDatabase();
+        return true;
+    }
+
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
+        getCallingPackage();
+        switch (uriMatcher.match(uri)) {
+            case CODE_ALL_ITEMS:
+                return database.query(TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+            case CODE_SINGLE_ITEM:
+                selection = "_id = ?";
+                selectionArgs = new String[] { uri.getLastPathSegment() };
+                return database.query(TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+    }
+
+    @Override
+    public String getType(Uri uri) {
+        switch (uriMatcher.match(uri)) {
+            case CODE_ALL_ITEMS:
+                return "vnd.android.cursor.dir/vnd.com.example.mycontentprovider.my_table";
+            case CODE_SINGLE_ITEM:
+                return "vnd.android.cursor.item/vnd.com.example.mycontentprovider.my_table";
+            default:
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
+        }
+    }
+
+    @Override
+    public Uri insert(Uri uri, ContentValues values) {
+        return 0;
+    }
+
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        return 0;
+    }
+
+    @Override
+    public int update(Uri uri, ContentValues values, String selection,
+                      String[] selectionArgs) {
+int callingUid = Binder.getCallingUid();
+        PackageManager pm = getContext().getPackageManager();
+        boolean signatureMatch = false;
+
+        try {
+            String[] packages = pm.getPackagesForUid(callingUid);
+            if (packages != null && packages.length > 0) {
+                for (String packageName : packages) {
+                    if (pm.checkSignatures(getContext().getPackageName(), packageName) == PackageManager.SIGNATURE_MATCH) {
+                        signatureMatch = true;
+                        Log.d(TAG, "Signature match for package: " + packageName + " (UID: " + callingUid + ")");
+                        break; // Found a matching signature, no need to check further
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking caller signature for UID: " + callingUid, e);
+            throw new SecurityException("Failed to verify caller signature.");
+        }
+
+        if (!signatureMatch) {
+            Log.w(TAG, "Unauthorized update attempt from UID: " + callingUid);
+            throw new SecurityException("Caller does not have the required signature to update this provider.");
+        }
+
+        int count = 0;
+        switch (uriMatcher.match(uri)) {
+            case CODE_ALL_ITEMS:
+                count = database.update(TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case CODE_SINGLE_ITEM:
+                // Ensure selection and selectionArgs are safe for SQL queries.
+                // It's good practice to build selection carefully or use placeholders.
+                String id = uri.getLastPathSegment();
+                if (id == null || id.isEmpty()) {
+                    throw new IllegalArgumentException("Missing ID for single item update: " + uri);
+                }
+                String finalSelection = "_id = ?";
+                String[] finalSelectionArgs;
+                if (selectionArgs != null) {
+                    finalSelectionArgs = new String[selectionArgs.length + 1];
+                    finalSelectionArgs[0] = id;
+                    System.arraycopy(selectionArgs, 0, finalSelectionArgs, 1, selectionArgs.length);
+                } else {
+                    finalSelectionArgs = new String[]{id};
+                }
+                count = database.update(TABLE_NAME, values, finalSelection, finalSelectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI for update: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
+    }
+
+    private static class DatabaseHelper extends SQLiteOpenHelper {
+        private static final String DATABASE_NAME = "mydb";
+        private static final int DATABASE_VERSION = 1;
+
+        DatabaseHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL("CREATE TABLE " + TABLE_NAME + " ("
+                    + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "name TEXT, "
+                    + "value INTEGER"
+                    + ");");
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            onCreate(db);
+        }
+    }
+}
