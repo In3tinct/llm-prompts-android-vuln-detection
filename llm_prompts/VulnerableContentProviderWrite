@@ -8,14 +8,17 @@ As a highly experienced Android security analyst, your task is to review the Jav
 1.  **Analyze the ContentProvider Java/Kotlin source code:**
     * Given to you is the code for an exported ContentProvider which does not have write:permissions declared in AndroidManifest.xml file.
     * Identify the implementation of the `insert()`, `delete()`, and `update()` methods.
-    * Determine if these methods contain actual logic for data modification (i.e., they don't simply return `0` or `null` without performing an operation).
+    * Determine if these methods contain actual logic for data modification (i.e., they perform database operations like `database.insert()`, `database.delete()`, `database.update()`, or similar data persistence actions).
     * Look for explicit validation of the caller's permission using methods such as:
         * `checkCallingPermission`
+        * `enforceCallingPermission`
+        * `checkCallingOrSelfPermission` (though less recommended for IPC)
+        * Checks involving `Binder.getCallingUid()` and `PackageManager.checkSignatures()`
 2.  **Correlate findings and assess vulnerability:**
-    * If any of `insert()`, `delete()`, or `update()` methods are not protected with having actual data modification implementations (i.e., they don't simply return `0` or `null` without performing an operation), then it's a potential vulnerability.
+    * If any of the `insert()`, `delete()`, or `update()` methods **contain actual data modification implementations** (as defined in step 1) **AND are not protected** with explicit permission checks, then it is a vulnerability.
 3.  **Provide a JSON output:** Based on your analysis, provide a JSON output with two keys:
     * `"Vulnerable"`: Value should be `"Yes"`, `"No"`, or `"Needs manual review"`.
-    * `"Description"`: A concise explanation of why you reached your conclusion, referencing the ContentProvider's export status, permission configuration in `AndroidManifest.xml`, and the implementation of write operations in the source code.
+    * `"Description"`: A concise explanation of why you reached your conclusion, referencing the ContentProvider's export status, assumed lack of `writePermission` configuration in `AndroidManifest.xml`, and the implementation of write operations in the source code.
 
 **Code Snippet to Analyze:**
 ```java
