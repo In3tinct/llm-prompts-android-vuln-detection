@@ -10,6 +10,10 @@ As a highly experienced Android security analyst, your task is to review the Jav
     * Examine the `onStartCommand()`, `onBind()`, and any other critical methods (e.g., methods within an `IBinder` implementation) that handle incoming requests or sensitive operations.
     * Look for explicit validation of the caller's UID (User ID) using methods such as:
         * `Binder.getCallingUid()`
+        * `checkCallingPermission`
+        * `enforceCallingPermission`
+        * `checkCallingOrSelfPermission` (though less recommended for IPC)
+        *  Checks involving `Binder.getCallingUid()` and `PackageManager.checkSignatures()`
 2.  **Assess Vulnerability:**
     * If an exported service performs sensitive operations or returns privileged information without verifying the caller's UID using appropriate app-side validation, it's a potential vulnerability.
 3.  **Provide a JSON output:** Based on your analysis, provide a JSON output with two keys:
