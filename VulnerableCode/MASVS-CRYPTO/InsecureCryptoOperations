@@ -1,1 +1,54 @@
+package com.example.myapplication;
 
+import android.os.Bundle;
+import android.util.Log;
+import androidx.appcompat.app.AppCompatActivity;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+public class InsecureCryptoOperations extends AppCompatActivity {
+
+    private static final String TAG = "AESEncryption";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        String originalText = "This is a secret message.";
+        String encryptionKey = "a_very_secret_key"; // 16, 24, or 32 bytes for AES
+
+
+        try {
+
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(128);
+            SecretKey secretKey = keyGenerator.generateKey();
+            byte[] aesKeyBytes = secretKey.getEncoded();
+
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(aesKeyBytes, "AES");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+
+            byte[] encryptedData = cipher.doFinal(originalText.getBytes());
+
+            Cipher decryptCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            decryptCipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+            byte[] decryptedData = decryptCipher.doFinal(encryptedData);
+            String decryptedText = new String(decryptedData);
+            Log.d(TAG, "Decrypted: " + decryptedText);
+
+
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "Algorithm not found: " + e.getMessage());
+        } catch (NoSuchPaddingException e) {
+            Log.e(TAG, "Padding not found: " + e.getMessage());
+        } catch (Exception e) { // Catch all other exceptions like InvalidKeyException, IllegalBlockSizeException, BadPaddingException
+            Log.e(TAG, "Encryption/Decryption error: " + e.getMessage());
+        }
+    }
+}
