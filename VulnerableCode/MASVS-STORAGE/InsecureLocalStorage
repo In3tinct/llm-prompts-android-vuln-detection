@@ -11,39 +11,24 @@ public class InsecureLocalStorage extends Activity
     private EditText editTextPin; // Declare your EditText
     private SharedPreferences sharedPreferences; // Declare SharedPreferences
 
-    // In your onCreate() method for an Activity, or onCreateView()/onViewCreated() for a Fragment:
-    public void setupPinSaving(Context context) { // Pass context if calling from a utility method
-        // Initialize your EditText (replace R.id.editTextPin with your actual ID)
-        editTextPin = findViewById(R.id.editTextPin);
-
-        // Initialize SharedPreferences
-        // "MyPrefs" is the name of your preferences file. You can choose any name.
-        // MODE_PRIVATE means only your app can access this file.
-        sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-    }
-
     // Call this method when you want to save the PIN (e.g., in a button click listener)
     public void saveUserPin() {
+        editTextPin = findViewById(R.id.editTextPin);
+        sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+
         String userPin = editTextPin.getText().toString();
 
-        // Always check if the PIN is empty before saving, to prevent saving blank values
         if (userPin.isEmpty()) {
-            // Optionally, show a message to the user that the PIN cannot be empty
-            // Toast.makeText(context, "PIN cannot be empty", Toast.LENGTH_SHORT).show();
-            return; // Stop the method if PIN is empty
+            return;
         }
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("pin", userPin); // "pin" is the key. This is fine.
-        editor.apply(); // Asynchronously saves the changes
-
-        // Optional: Provide user feedback that the PIN has been saved
-        // Toast.makeText(context, "PIN saved successfully!", Toast.LENGTH_SHORT).show();
-    }
+        editor.putString("pin", userPin);
+        editor.apply();
+        }
 
     // You can also add a method to retrieve the PIN later
     public String getSavedPin() {
-        // "pin" is the key, and the second argument is the default value if "pin" is not found
         return sharedPreferences.getString("pin", "");
     }
 }
