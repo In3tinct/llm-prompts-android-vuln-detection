@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 public class InsecureClassLoadingviaCreatepackagecontext extends Activity {
 
     Context remoteContext = null;
-    private static final String REMOTE_PACKAGE_NAME = "com.example.broadcastsender";
+    private static final String REMOTE_PACKAGE_NAME = "com.example.test";
 
     public void loadRemoteClass()
     {
