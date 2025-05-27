@@ -38,7 +38,6 @@ public class VulnerableContentProviderWrite extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        getCallingPackage();
         switch (uriMatcher.match(uri)) {
             case CODE_ALL_ITEMS:
                 return database.query(TABLE_NAME, projection, selection, selectionArgs,
