@@ -1,3 +1,5 @@
+File - https://github.com/In3tinct/llm-prompts-android-vuln-detection/blob/main/NotVulnerableCode/MASVS-PLATFORM/ExportedService
+
 {
   "Vulnerable": "No",
   "Description": "The service 'ProtectedExportedService' is designed to be exported. Although the prompt states it is 'not protected with android permission in AndroidManifest.xml', the provided Java code for the 'onBind()' method and its `IBinder` implementation (`mBinder`) explicitly performs robust app-side validation. Specifically, the 'getSensitiveInfo()' method (which presumably returns privileged information) utilizes 'Binder.getCallingUid()' to identify the caller and then rigorously checks the calling package's signature against its own using 'PackageManager.checkSignatures()'. If the signature does not match, a 'SecurityException' is thrown, preventing unauthorized access to sensitive data. This explicit app-side signature validation acts as a strong security control for an exported service."
