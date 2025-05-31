@@ -1,0 +1,6 @@
+File  - https://github.com/satishpatnayak/AndroGoat/blob/master/app/src/main/java/owasp/sat/agoat/DownloadInvoiceService.kt
+
+{
+  "Vulnerable": "Yes",
+  "Description": "The `DownloadInvoiceService` is an exported service (as assumed by the problem description due to the lack of manifest-level permission protection) that performs a sensitive operation: downloading a file from a hardcoded URL. The `onStartCommand` method, which initiates this download via `downloadFile()`, does not include any app-side validation of the calling UID using methods like `Binder.getCallingUid()`, `checkCallingPermission`, or `enforceCallingPermission`. This lack of validation allows any other application installed on the device to start this service and trigger arbitrary file downloads, potentially leading to denial of service, resource exhaustion, or other malicious activities by filling up the user's download directory."
+}
