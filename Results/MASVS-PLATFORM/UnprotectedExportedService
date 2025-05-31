@@ -1,4 +1,0 @@
-{
-  "Vulnerable": "Yes",
-  "Description": "The `UnprotectedExportedService` is an exported Service, as implied by its name and the context of the prompt (lacking a manifest-level permission). The `onBind()` method returns an `IBinder` implementation (`SensitiveBinder`). Within `SensitiveBinder`, the `getSensitiveInfo()` method directly accesses and returns sensitive data stored in `SharedPreferences` (`sharedPreferences.getString(SENSITIVE_DATA_KEY, ...)`). Crucially, there is no app-side validation of the caller's UID or permissions (e.g., using `Binder.getCallingUid()`, `checkCallingPermission`, or `checkSignatures`) before this sensitive information is returned. This means any application on the device can bind to this exported service and call `getSensitiveInfo()` to retrieve confidential data without any authorization."
-}
