@@ -18,7 +18,7 @@ As a highly experienced Android security analyst, your task is to review the Jav
     * `"Description"`: A concise explanation of the identified weakness (e.g., "Use of insecure ECB mode," "Weak key size," "Absence of proper IV handling," "Deprecated algorithm used").
 
 **Code Snippet to Analyze:**
-```java
+```
 //code snippet
 ````
 
