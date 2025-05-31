@@ -1,3 +1,5 @@
+File - https://github.com/In3tinct/llm-prompts-android-vuln-detection/blob/main/VulnerableCode/MASVS-STORAGE/InsecureLocalStorage
+
 {
   "Vulnerable": "Yes",
   "Description": "The code stores a user's PIN in 'SharedPreferences' using 'editor.putString(\"pin\", userPin)' without any encryption. SharedPreferences are stored in a plain text XML file within the app's private data directory. While 'MODE_PRIVATE' restricts direct access from other unprivileged apps, a rooted device or an attacker with physical access could easily read this sensitive information, along with vulnerability like arbitrary file read etc. This constitutes insecure sensitive data storage, violating MASVS-STORAGE principles."
