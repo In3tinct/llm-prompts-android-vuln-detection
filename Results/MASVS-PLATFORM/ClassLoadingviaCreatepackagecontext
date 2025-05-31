@@ -1,3 +1,5 @@
+File - https://github.com/In3tinct/llm-prompts-android-vuln-detection/blob/main/NotVulnerableCode/MASVS-PLATFORM/ClassLoadingviaCreatepackagecontext
+
 {
   "Vulnerable": "No",
   "Description": "The `createPackageContext` method is called with `CONTEXT_INCLUDE_CODE | CONTEXT_IGNORE_SECURITY`. However, there is explicit signature verification performed by the `isPackageSignatureValid` method *before* `createPackageContext` is called. This method retrieves the target package's signature and compares it against an `EXPECTED_REMOTE_SIGNATURE_SHA256`. This preemptive signature verification mitigates the risk of insecure class loading."
