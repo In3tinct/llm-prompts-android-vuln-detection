@@ -21,7 +21,7 @@ As a highly experienced Android security analyst, your task is to review the Jav
     * `"Description"`: A concise explanation of why you reached your conclusion, referencing the service's export status, the absence of a manifest-level permission, and the lack of app-side caller UID validation before processing sensitive data or operations.
 
 **Code Snippet to Analyze:**
-```java
+```
 //code snippet
 ````
 
