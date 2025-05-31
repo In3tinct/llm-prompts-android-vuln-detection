@@ -21,7 +21,7 @@ As a highly experienced Android security analyst, your task is to review the Jav
     * `"Description"`: A concise explanation of why you reached your conclusion, referencing the ContentProvider's export status, assumed lack of `writePermission` configuration in `AndroidManifest.xml`, and the implementation of write operations in the source code.
 
 **Code Snippet to Analyze:**
-```java
+```
 //code snippet
 ````
 
