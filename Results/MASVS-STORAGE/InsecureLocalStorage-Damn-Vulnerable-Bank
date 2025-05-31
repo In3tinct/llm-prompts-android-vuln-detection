@@ -1,0 +1,4 @@
+{
+  "Vulnerable": "Yes",
+  "Description": "The application stores an 'accessToken' in SharedPreferences without any explicit encryption. While the network communication uses 'EncryptDecrypt.encrypt' and 'EncryptDecrypt.decrypt', the local storage of the 'accessToken' in `sharedPreferences.edit().putString(\"accesstoken\",accessToken).apply();` is not protected, making it vulnerable to local attacks if the device is compromised. 'accessToken' is considered sensitive data, similar to a 'token' or 'sessionId'."
+}
