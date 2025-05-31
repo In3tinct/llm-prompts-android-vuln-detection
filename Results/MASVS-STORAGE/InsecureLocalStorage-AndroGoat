@@ -1,0 +1,6 @@
+File - https://github.com/satishpatnayak/AndroGoat/blob/master/app/src/main/java/owasp/sat/agoat/InsecureStorageTempActivity.kt
+
+{
+  "Vulnerable": "Yes",
+  "Description": "The application stores sensitive information, specifically 'username' and 'password', into a temporary file using `File.createTempFile` and `FileWriter`. Although the file is created in the application's data directory, the code explicitly calls `userinfo.setReadable(true)` and `userinfo.setWritable(true)`, making the file world-readable and world-writable. This allows any other application or a rooted user to access the sensitive credentials without restriction. There are no explicit calls to encryption routines (e.g., Cipher, KeyStore, AndroidX Security Crypto APIs) or secure storage mechanisms to protect the 'username' and 'password' in the file system."
+}
