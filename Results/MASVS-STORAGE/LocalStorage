@@ -1,3 +1,5 @@
+File - https://github.com/In3tinct/llm-prompts-android-vuln-detection/blob/main/NotVulnerableCode/MASVS-STORAGE/LocalStorage
+
 {
   "Vulnerable": "No",
   "Description": "The code uses `EncryptedSharedPreferences` from AndroidX Security Crypto to store the 'userPin'. This mechanism correctly leverages `MasterKeys.AES256_GCM_SPEC` for the master key, and `AES256_SIV` for key encryption and `AES256_GCM` for value encryption, ensuring that both keys and values are securely encrypted at rest. This approach is the recommended best practice for storing sensitive data like PINs in SharedPreferences, providing confidentiality and integrity protection against unauthorized access to the app's private data directory. The sensitive variable `userPin` is identified, and it is appropriately saved and retrieved using the secure `EncryptedSharedPreferences` instance."
