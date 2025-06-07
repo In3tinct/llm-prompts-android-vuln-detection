@@ -15,7 +15,7 @@ As a highly experienced Android security analyst, your task is to review the And
         * `checkCallingOrSelfPermission` (though less recommended for IPC)
 2.  **Assess Vulnerability:**
     * If an exported receiver has intent filter that is not a system broadcast and the associated
-       java/kotlin implementation of the receiver does not have permission check. Only when noth of the conditions should satisfy, it's a potential vulnerability. 
+       java/kotlin implementation of the receiver does not have permission check. Only when both of the conditions satisfy, it's a potential vulnerability. 
 3.  **Provide a JSON output:** Based on your analysis, provide a JSON output with two keys:
     * `"Vulnerable"`: Value should be `"Yes"`, `"No"`, or `"Needs manual review"`.
     * `"Description"`: A concise explanation of why you reached your conclusion, referencing the AndroidManifest.xml file, the absence of a manifest-level permission, and the lack of app-side caller permission validation before processing sensitive data or operations.
