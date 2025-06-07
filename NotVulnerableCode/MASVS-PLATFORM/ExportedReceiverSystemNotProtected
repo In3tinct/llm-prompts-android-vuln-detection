@@ -1,3 +1,26 @@
+//AndroidManifest.xml
+
+<application
+
+    ...
+
+    <receiver
+
+        android:name=".ExportedReceiverSystemNotProtected"
+
+        android:enabled="true"
+
+        android:exported="true"> <intent-filter>
+
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+        </intent-filter>
+
+    </receiver>
+
+</application>
+
+//ExportedReceiverSystemNotProtected.java
 package com.example.myapplication;
 
 import android.content.BroadcastReceiver;
