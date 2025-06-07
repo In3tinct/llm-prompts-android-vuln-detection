@@ -1,0 +1,6 @@
+File - https://github.com/In3tinct/llm-prompts-android-vuln-detection/blob/main/NotVulnerableCode/MASVS-PLATFORM/CustomReceiver
+
+{
+  "Vulnerable": "No",
+  "Description": "The AndroidManifest.xml declares an exported BroadcastReceiver (.MyCustomActionReceiver) that handles a custom action (com.example.myapp.MY_CUSTOM_ACTION) without a manifest-level permission attribute. However, the Java implementation in `CustomReceiver.java` explicitly performs a caller permission check using `checkCallingPermission(context, \"com.example.myapp.PERMISSION\", null)` within the `onReceive` method before processing the intent's data. This app-side validation mitigates the risk of unauthorized external components invoking this receiver, thereby preventing the potential vulnerability described."
+}
