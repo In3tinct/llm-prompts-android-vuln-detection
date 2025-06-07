@@ -1,0 +1,6 @@
+File - https://github.com/In3tinct/llm-prompts-android-vuln-detection/blob/main/VulnerableCode/MASVS-PLATFORM/ExportedReceiverCustomNotProtected
+
+{
+  "Vulnerable": "Yes",
+  "Description": "The AndroidManifest.xml declares an exported receiver (.ExportedReceiverCustomNotProtected) with `android:exported=\"true\"`. Its intent filter includes a custom action `com.example.myapp.MY_CUSTOM_ACTION`, which is not a system broadcast. Crucially, the receiver definition in the manifest does not specify `android:permission` to protect it. Furthermore, the `onReceive` method in the `ExportedReceiverCustomNotProtected.java` implementation lacks any app-side caller permission validation using methods like `checkCallingPermission`, `enforceCallingPermission`, or `checkCallingOrSelfPermission` before processing the received data. This allows any malicious application to send an intent with the specified custom action and potentially trigger sensitive operations or inject malicious data, leading to unauthorized access or denial of service."
+}
