@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import androidx.core.content.PermissionChecker;
 
-public class CustomReceiver extends BroadcastReceiver {
+public class ExportedReceiverCustomProtected extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent)
     {
