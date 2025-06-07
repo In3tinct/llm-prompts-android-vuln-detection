@@ -1,6 +1,0 @@
-File - https://github.com/In3tinct/llm-prompts-android-vuln-detection/blob/main/NotVulnerableCode/MASVS-PLATFORM/SystemReceiverNotProtected
-
-{
-  "Vulnerable": "No",
-  "Description": "The `SystemReceiverNotProtected` is exported and handles the `android.intent.action.BOOT_COMPLETED` system broadcast. While there is no manifest-level permission protection or app-side caller permission validation, this specific action is a system-wide broadcast intended for all applications to receive upon device boot completion. It does not typically involve sensitive data or operations that would require permission validation from arbitrary callers. Therefore, its exposure without permission is not considered a security vulnerability in this context."
-}
