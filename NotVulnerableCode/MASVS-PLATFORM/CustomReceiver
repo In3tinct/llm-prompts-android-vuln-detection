@@ -12,7 +12,7 @@ public class CustomReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        if (checkCallingPermission(context,"com.example.myapp.RECEIVER",null) == PermissionChecker.PERMISSION_GRANTED) {
+        if (checkCallingPermission(context,"com.example.myapp.PERMISSION",null) == PermissionChecker.PERMISSION_GRANTED) {
             // Get data from the intent (if any)
             String data = intent.getStringExtra("data");
 
