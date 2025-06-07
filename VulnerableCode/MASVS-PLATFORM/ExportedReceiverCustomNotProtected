@@ -1,3 +1,26 @@
+//AndroidManifest.xml
+
+<application
+
+    ...
+
+    <receiver
+
+        android:name=".ExportedReceiverCustomNotProtected"
+
+        android:enabled="true"
+
+        android:exported="true"> <intent-filter>
+
+            <action android:name="com.example.myapp.MY_CUSTOM_ACTION" />
+
+        </intent-filter>
+
+    </receiver>
+
+</application>
+
+//ExportedReceiverCustomNotProtected.java
 package com.example.myapplication;
 
 import static androidx.core.content.PermissionChecker.checkCallingPermission;
