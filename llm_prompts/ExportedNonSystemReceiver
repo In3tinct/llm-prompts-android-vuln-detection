@@ -1,0 +1,35 @@
+As a highly experienced Android security analyst, your task is to review the AndroidManifest.xml, Java/Kotlin source code for any security vulnerabilities.
+
+**Detection Name:** Analysis of Exported Broadcast Receivers Handling Custom (Non-System) Actions Without Permission Protection.
+**Bug Class:** MASVS Platform
+
+**Instructions:**
+
+1.  **Analyze the given AndroidManifest.xml code snippet and java/kotlin implementation for a Receiver:**
+    * Given to you is the code for an exported Receiver which is not protected with android permission in AndroidManifest.xml file. 
+    * Also, given to you is the receiver's implementation code in java/kotlin. 
+    * Examine if the intent filter of the receiver is a system broadcast or not in AndroidManifest.xml file.
+    * Look for explicit validation of the permission on app level code using methods such as:
+        * `checkCallingPermission`
+        * `enforceCallingPermission`
+        * `checkCallingOrSelfPermission` (though less recommended for IPC)
+2.  **Assess Vulnerability:**
+    * If an exported receiver has intent filter that is not a system broadcast and the associated
+       java/kotlin implementation of the receiver does not have permission check. Only when noth of the conditions should satisfy, it's a potential vulnerability. 
+3.  **Provide a JSON output:** Based on your analysis, provide a JSON output with two keys:
+    * `"Vulnerable"`: Value should be `"Yes"`, `"No"`, or `"Needs manual review"`.
+    * `"Description"`: A concise explanation of why you reached your conclusion, referencing the AndroidManifest.xml file, the absence of a manifest-level permission, and the lack of app-side caller permission validation before processing sensitive data or operations.
+
+**Code Snippet to Analyze:**
+```
+//code snippet
+````
+
+**Expected JSON Output Format:**
+
+```json
+{
+  "Vulnerable": "Yes" | "No" | "Needs manual review",
+  "Description": "Reason for vulnerability assessment."
+}
+
