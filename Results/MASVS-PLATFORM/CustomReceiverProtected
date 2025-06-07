@@ -1,6 +1,0 @@
-File - https://github.com/In3tinct/llm-prompts-android-vuln-detection/blob/main/NotVulnerableCode/MASVS-PLATFORM/CustomReceiverProtected
-
-{
-  "Vulnerable": "No",
-  "Description": "The `CustomReceiverProtected` is exported and handles a custom action `com.example.myapp.MY_CUSTOM_ACTION`. While the receiver is not protected by a permission at the manifest level, the `onReceive` method in `CustomReceiverProtected.java` explicitly validates the caller's permission using `checkCallingPermission(\"com.example.myapp.PERMISSION\")` before processing any data or performing operations. This app-side permission check mitigates the vulnerability."
-}
