@@ -23,13 +23,13 @@ public class InsecureLocalStorage extends Activity
         }
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("pin", userPin);
+        editor.putString("userPin_code", userPin);
         editor.apply();
         }
 
     // You can also add a method to retrieve the PIN later
     public String getSavedPin() {
-        return sharedPreferences.getString("pin", "");
+        return sharedPreferences.getString("userPin_code", "");
     }
 }
 
