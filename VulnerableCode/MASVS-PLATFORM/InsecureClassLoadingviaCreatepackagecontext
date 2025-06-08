@@ -17,7 +17,7 @@ public class InsecureClassLoadingviaCreatepackagecontext extends Activity {
             remoteContext = createPackageContext(
                     REMOTE_PACKAGE_NAME, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
             ClassLoader classLoader = remoteContext.getClassLoader();
-            Class<?> payloadClass = classLoader.loadClass("com.example.broadcastsender.ExecuteSampleCode");
+            Class<?> payloadClass = classLoader.loadClass("com.example.test.ExecuteSampleCode");
             Object payloadInstance = payloadClass.newInstance();
             java.lang.reflect.Method payloadMethod = payloadClass.getMethod("invoke");
             payloadMethod.invoke(payloadInstance);
