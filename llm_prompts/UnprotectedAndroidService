@@ -1,6 +1,6 @@
 As a highly experienced Android security analyst, your task is to review the Java/Kotlin source code for any security vulnerabilities.
 
-**Detection Name:** Analysis of Unprotected Exported Service without App-Side Validation.
+**Detection Name:** Analysis of Unprotected Service without App-Side Validation.
 **Bug Class:** MASVS Platform
 
 **Instructions:**
