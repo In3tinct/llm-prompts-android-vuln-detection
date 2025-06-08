@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
 public class SecureClassLoadingViaCreatePackageContext extends Activity {
 
     private static final String TAG = "SecureClassLoading";
-    private static final String REMOTE_PACKAGE_NAME = "com.example.broadcastsender";
+    private static final String REMOTE_PACKAGE_NAME = "com.example.test";
 
     private static final String EXPECTED_REMOTE_SIGNATURE_SHA256 =
             "YOUR_EXPECTED_REMOTE_PACKAGE_SIGNATURE_SHA256_HERE";
@@ -40,7 +40,7 @@ public class SecureClassLoadingViaCreatePackageContext extends Activity {
             remoteContext = createPackageContext(
                     REMOTE_PACKAGE_NAME, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
             ClassLoader classLoader = remoteContext.getClassLoader();
-            Class<?> payloadClass = classLoader.loadClass("com.example.broadcastsender.ExecuteSampleCode");
+            Class<?> payloadClass = classLoader.loadClass("com.example.test.ExecuteSampleCode");
             Object payloadInstance = payloadClass.newInstance();
             java.lang.reflect.Method payloadMethod = payloadClass.getMethod("invoke");
             payloadMethod.invoke(payloadInstance);
