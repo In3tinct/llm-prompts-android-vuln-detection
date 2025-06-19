@@ -34,7 +34,7 @@ public class UnprotectedExportedService extends Service {
     private class SensitiveBinder extends ISensitiveService.Stub {
         @Override
         public String getSensitiveInfo() {
-            String sensitiveInfo = sharedPreferences.getString(SENSITIVE_DATA_KEY, "No sensitive data found.");
+            String sensitiveInfo = sharedPreferences.getString(SENSITIVE_DATA_KEY, "Some sensitive data.");
             Log.d(TAG, "Sensitive info retrieved from SharedPreferences.");
             return sensitiveInfo;
         }
