@@ -1,6 +1,0 @@
-File - https://github.com/dineshshetty/Android-InsecureBankv2/blob/master/InsecureBankv2/app/src/main/java/com/android/insecurebankv2/CryptoClass.java
-
-{
-  "Vulnerable": "Yes",
-  "Description": "The application uses a hardcoded and static Initialization Vector (IV) `ivBytes` (all zeros) for AES/CBC/PKCS5Padding encryption. An IV must be unique and randomly generated for each encryption operation to prevent identical plaintexts from resulting in identical ciphertexts, which can leak information. Reusing a static IV for CBC mode is a critical cryptographic weakness that makes the encryption susceptible to known-plaintext attacks and can compromise confidentiality. Additionally, the encryption key `key` is hardcoded as 'This is the super secret key 123', which is a severe vulnerability as it can be easily extracted from the application's code."
-}
